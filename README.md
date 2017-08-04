@@ -1,4 +1,4 @@
-# ğchange Desktop packager
+# ğchange desktop packager
 
 ## Test a release
 
@@ -16,7 +16,7 @@ This script will produce for a given `TAG`:
 
 * check that the `TAG` exists on remote GitHub repository
 * eventually create the pre-release if it does not exist
-* produce Linux and Windows releases of Gchange Desktop and upload them
+* produce Linux and Windows releases of ğchange desktop and upload them
 
 To produce `TAG` 0.5.2:
 
