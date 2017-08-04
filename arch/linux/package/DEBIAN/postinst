@@ -1,0 +1,12 @@
+#!/bin/bash
+
+GCHANGE_ROOT=/opt/gchange
+GCHANGE_NW=$GCHANGE_ROOT/nw
+
+if [[ -f $GCHANGE_ROOT/nw.nwb ]]; then
+  unzip -q -d $GCHANGE_NW $GCHANGE_ROOT/nw.nwb
+  chmod +x $GCHANGE_NW/nw $GCHANGE_NW/lib $GCHANGE_NW/locales
+  ln -s $GCHANGE_NW/nw /usr/bin/gchange
+fi
+
+chmod +r -R $GCHANGE_ROOT

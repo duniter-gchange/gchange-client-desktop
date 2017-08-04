@@ -1,0 +1,8 @@
+Package: gchange
+Version: 0.5.2
+Section: misc
+Priority: optional
+Architecture: all
+Installed-Size: 235351
+Maintainer: Benoit Lavenier <benoit.lavenier@e-is.pro>
+Description: Gchange marketplace for Libre Currency

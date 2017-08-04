@@ -1,0 +1,5 @@
+#!/bin/bash
+
+[[ -f /usr/bin/gchange ]] && rm /usr/bin/gchange
+[[ -f /usr/bin/gchange-desktop ]] && rm -f /usr/bin/gchange-desktop
+[[ -d /opt/gchange ]] && rm -Rf /opt/gchange

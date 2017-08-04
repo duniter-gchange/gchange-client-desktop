@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Gchange
+Exec=gchange
+Icon=/opt/gchange/nw/gchange/img/logo.png
+Type=Application
+Categories=Utility
