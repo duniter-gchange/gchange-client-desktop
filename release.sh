@@ -19,6 +19,21 @@ if [[ -z $TAG ]]; then
   exit 1
 fi
 
+# Force nodejs version to 6
+if [ -d "$NVM_DIR" ]; then
+    . $NVM_DIR/nvm.sh
+    nvm use 6
+else
+    echo "nvm (Node version manager) not found (directory $NVM_DIR not found). Please install, and retry"
+    exit -1
+fi
+
+# install dep if not already done
+if [ ! -d "node_modules" ]; then
+    npm install
+fi
+
+
 echo "Checking that $TAG has been pushed to 'origin'..."
 
 REMOTE_TAG=`node scripts/exists-tag.js "$TAG_NAME" | grep -Fo "$TAG_NAME"`
@@ -32,9 +47,13 @@ echo "Remote tag: $REMOTE_TAG"
 
 echo "Creating the pre-release if it does not exist..."
 ASSETS=`node ./scripts/create-release.js $REMOTE_TAG create`
-EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-linux-x64.deb
+
+if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
+    EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-linux-x64.deb
 gchange-desktop-$REMOTE_TAG-linux-x64.tar.gz
 gchange-desktop-$REMOTE_TAG-windows-x64.exe"
+fi
+
 echo "Assets: $EXPECTED_ASSETS"
 for asset in $EXPECTED_ASSETS; do
   if [[ -z `echo $ASSETS | grep -F "$asset"` ]]; then
