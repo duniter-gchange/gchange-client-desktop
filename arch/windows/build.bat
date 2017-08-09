@@ -18,7 +18,7 @@ REM echo "Suppression des anciennes sources..."
 rd /s /q gchange
 rd /s /q gchange_release
 echo "Clonage de Gchange..."
-git clone https://github.com/duniter/gchange.git
+git clone https://github.com/duniter-gchange/gchange-client.git
 cd gchange
 
 for /f "delims=" %%a in ('git rev-list --tags --max-count=1') do @set GCHANGE_REV=%%a
@@ -39,7 +39,7 @@ if not exist C:\vagrant\%NW_GZ% (
 
 if not exist C:\vagrant\%GCHANGE_ZIP% (
   echo "Telechargement de %GCHANGE_ZIP%..."
-  powershell -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://github.com/duniter/gchange/releases/download/%GCHANGE_TAG%/%GCHANGE_ZIP%\", \"C:\vagrant\%GCHANGE_ZIP%\")"
+  powershell -Command "(New-Object System.Net.WebClient).DownloadFile(\"https://github.com/duniter-gchange/gchange-client/releases/download/%GCHANGE_TAG%/%GCHANGE_ZIP%\", \"C:\vagrant\%GCHANGE_ZIP%\")"
 )
 
 call 7z x C:\vagrant\%NW_GZ%
