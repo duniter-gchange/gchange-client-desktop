@@ -2,10 +2,18 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "https://s3.eu-central-1.amazonaws.com/duniter/vagrant/duniter_win7.box"
+  #config.vm.box = "https://s3.eu-central-1.amazonaws.com/duniter/vagrant/duniter_trusty64.box"
+  config.vm.box = "duniter-gchange/gchange_trusty64"
+  config.vm.box_url = "./duniter_trusty64.box"
+  config.vm.define "gchange-release-windows"
+
   config.vm.provision :shell, path: "build.bat", run: 'always'
 
    config.vm.provider "virtualbox" do |vb|
+     # Customize the amount of memory on the VM:
      vb.memory = "4096"
+
+     # Rename in virtual box GUI
+     vb.name = "quadrige2-release-windows"
    end
 end

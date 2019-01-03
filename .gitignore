@@ -17,12 +17,14 @@ src/nw/gchange/dist*
 src/nw/gchange/fonts
 src/nw/gchange/img
 src/nw/gchange/lib
+src/nw/gchange/sounds
+src/nw/gchange/locale
 src/nw/gchange/config.js
 src/nw/gchange/*.html
 src/nw/gchange/manifest.json
 
 arch/linux/.vagrant
-arch/linux/gchange-*
+arch/linux/gchange*
 arch/linux/*.js*
 arch/linux/yarn*
 arch/linux/ubuntu*
@@ -36,4 +38,18 @@ arch/windows/ubuntu*
 arch/windows/nw*
 arch/windows/LICENSE.txt
 
+arch/osx/.vagrant
+
 .idea/
+
+src/nw/cesium
+!src/nw/cesium/node.js
+tmp
+
+package-lock.json
+src/nw/swiftshader/libEGL.so
+src/nw/swiftshader/libGLESv2.so
+src/nw/yarn.lock
+
+src/nw/yarn.lock
+src/nw/yarn.lock
