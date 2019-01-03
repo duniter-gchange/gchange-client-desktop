@@ -34,9 +34,9 @@ make)
       [[ $? -eq 0 ]] && cp ../../src/nw/package.json ./
       [[ $? -eq 0 ]] && cp ../../src/nw/LICENSE.txt ./
       [[ $? -eq 0 ]] && cp ../../src/nw/gchange/node.js ./
-      if [[ $? -eq 0 && ! -f ./duniter_trusty64.box ]]; then
+      if [[ $? -eq 0 && ! -f ./duniter_win7.box ]]; then
         echo ">> Downloading Windows VM..."
-        wget -kL https://s3.eu-central-1.amazonaws.com/duniter/vagrant/duniter_trusty64.box
+        wget -kL https://s3.eu-central-1.amazonaws.com/duniter/vagrant/duniter_win7.box
       fi
       [[ $? -eq 0 ]] && echo ">> Starting Vagrant Windows VM..."
       [[ $? -eq 0 ]] && vagrant up

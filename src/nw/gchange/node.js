@@ -1,4 +1,4 @@
-// require('nw.gui').Window.get().showDevTools()
+ //require('nw.gui').Window.get().showDevTools()
 
 // Rename "require" to avoid conflicts with pure JS libraries
 requireNodejs = require
@@ -38,10 +38,6 @@ const DEFAULT_GCHANGE_SETTINGS = {
       "host": "data.gchange.fr",
       "port": "443"
     }
-  },
-  "node": {
-    "host": local_host,
-    "port": local_port
   }
 };
 

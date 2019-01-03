@@ -3,6 +3,7 @@
 ROOT_DIR=$PWD
 TEMP_DIR=$PWD/tmp
 NW_VERSION=0.35.3
+NW_BASENAME=nwjs-sdk
 CHROMIUM_MAJOR_VERSION=71
 GCHANGE_DEFAULT_VERSION=0.8.3
 
@@ -45,13 +46,12 @@ mkdir -p $TEMP_DIR && cd $TEMP_DIR
 if [[ ! -f $ROOT_DIR/src/nw/nw ]];
 then
   cd ${TEMP_DIR}
-  NV_BASENAME=nwjs-sdk
-  wget http://dl.nwjs.io/v${NV_VERSION}/${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
-  tar xvzf ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
-  rm ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
-  mv ${NV_BASENAME}-v${NV_VERSION}-linux-x64/* "$ROOT_DIR/src/nw"
-  rm ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
-  rmdir ${NV_BASENAME}-v${NV_VERSION}-linux-x64
+  wget http://dl.nwjs.io/v${NW_VERSION}/${NW_BASENAME}-v${NW_VERSION}-linux-x64.tar.gz
+  tar xvzf ${NW_BASENAME}-v${NW_VERSION}-linux-x64.tar.gz
+  rm ${NW_BASENAME}-v${NW_VERSION}-linux-x64.tar.gz
+  mv ${NW_BASENAME}-v${NW_VERSION}-linux-x64/* "$ROOT_DIR/src/nw"
+  rm ${NW_BASENAME}-v${NW_VERSION}-linux-x64.tar.gz
+  rmdir ${NW_BASENAME}-v${NW_VERSION}-linux-x64
   rmdir nw
 
 # Check NW version

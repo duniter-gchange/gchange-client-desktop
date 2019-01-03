@@ -37,6 +37,7 @@ arch/windows/yarn*
 arch/windows/ubuntu*
 arch/windows/nw*
 arch/windows/LICENSE.txt
+arch/windows/*.box
 
 arch/osx/.vagrant
 
