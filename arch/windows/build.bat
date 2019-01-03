@@ -1,5 +1,5 @@
 
-set NW_VERSION=0.22.3
+set NW_VERSION=0.35.3
 set NW_RELEASE=v%NW_VERSION%
 set NW=nwjs-%NW_RELEASE%-win-x64
 set NW_GZ=%NW%.zip
@@ -15,11 +15,11 @@ set PATH="C:\Program Files (x86)\Inno Setup 5";%PATH%
 
 cd C:\Users\vagrant
 REM echo "Suppression des anciennes sources..."
-rd /s /q gchange
+rd /s /q gchange-client
 rd /s /q gchange_release
 echo "Clonage de Gchange..."
 git clone https://github.com/duniter-gchange/gchange-client.git
-cd gchange
+cd gchange-client
 
 for /f "delims=" %%a in ('git rev-list --tags --max-count=1') do @set GCHANGE_REV=%%a
 for /f "delims=" %%a in ('git describe --tags %GCHANGE_REV%') do @set GCHANGE_TAG=%%a

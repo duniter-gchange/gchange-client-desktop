@@ -3,7 +3,10 @@
 TAG="$1"
 TAG_NAME="v$1"
 ARCH=`uname -m`
-# Check that the tag exists remotely
+
+# Folders
+ROOT=`pwd`
+DOWNLOADS="$ROOT/downloads"
 
 if [[ -z ${TAG} ]]; then
   echo "Wrong call to the command, syntax is:"
@@ -30,12 +33,11 @@ fi
 
 # install dep if not already done
 if [[ ! -d "node_modules" ]]; then
-    npm install
+    yarn
 fi
 
-
+# Check that the tag exists remotely
 echo "Checking that $TAG has been pushed to 'origin'..."
-
 REMOTE_TAG=`node scripts/exists-tag.js "$TAG_NAME" | grep -Fo "$TAG_NAME"`
 
 if [[ -z ${REMOTE_TAG} ]]; then
@@ -47,6 +49,18 @@ echo "Remote tag: $REMOTE_TAG"
 
 echo "Creating the pre-release if it does not exist..."
 ASSETS=`node ./scripts/create-release.js $REMOTE_TAG create`
+
+# Downloading web assets (once)
+GCHANGE_RELEASE="gchange-$REMOTE_TAG-web"
+if [[ ! -f "${DOWNLOADS}/${GCHANGE_RELEASE}.zip" ]]; then
+    echo "Downloading Gchange web asset..."
+    mkdir -p ${DOWNLOADS} && cd ${DOWNLOADS}
+    wget "https://github.com/duniter-gchange/gchange-client/releases/download/${REMOTE_TAG}/${GCHANGE_RELEASE}.zip"
+    if [[ $? -ne 0 ]]; then
+        exit 2
+    fi
+    cd $ROOT
+fi
 
 if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
     EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-linux-x64.deb

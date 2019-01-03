@@ -69,7 +69,9 @@ fi
 
 # Install deps
 cd ${ROOT_DIR}/src/nw
-yarn
+if [[ ! -d "node_modules" ]]; then
+    yarn
+fi
 
 # Remove old Cesium version
 if [[ -f $ROOT_DIR/src/nw/gchange/index.html ]];
