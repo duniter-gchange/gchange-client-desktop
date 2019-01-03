@@ -2,15 +2,15 @@
 
 ROOT_DIR=$PWD
 TEMP_DIR=$PWD/tmp
-
-NW_VERSION=0.22.3
-#NW_VERSION=0.26.6
+NW_VERSION=0.35.3
+CHROMIUM_MAJOR_VERSION=71
+GCHANGE_DEFAULT_VERSION=0.8.3
 
 # Check first arguments = version
 if [[ $1 =~ ^[0-9]+.[0-9]+.[0-9]+((a|b)[0-9]+)?$ ]];
 then
   VERSION="$1"
-  echo "Using given version: $VERSION"
+  echo "Using Gchange version: $VERSION"
 else
   if [[ -f $ROOT_DIR/src/nw/cesium/manifest.json ]];
   then
@@ -21,22 +21,53 @@ else
   then
     echo "Using detected version: $VERSION"
   else
-    VERSION="0.6.1";
-    echo "No version detected. Using default: $VERSION"
+    VERSION="${GCHANGE_DEFAULT_VERSION}";
+    echo "No Gchange version detected. Using default: $VERSION"
   fi
 fi
 
 mkdir -p $TEMP_DIR && cd $TEMP_DIR
 
+
+# Force nodejs version to 6
+if [[ -d "$NVM_DIR" ]]; then
+    . $NVM_DIR/nvm.sh
+    nvm use 6
+else
+    echo "nvm (Node version manager) not found (directory NVM_DIR not defined). Please install nvm, and retry"
+    exit -1
+fi
+
+mkdir -p $TEMP_DIR && cd $TEMP_DIR
+
+
 # Install NW.js
 if [[ ! -f $ROOT_DIR/src/nw/nw ]];
 then
-  wget http://dl.nwjs.io/v$NW_VERSION/nwjs-sdk-v$NW_VERSION-linux-x64.tar.gz
-  tar xvzf nwjs-sdk-v$NW_VERSION-linux-x64.tar.gz
-  mv nwjs-sdk-v$NW_VERSION-linux-x64/* "$ROOT_DIR/src/nw"
-  rm nwjs-sdk-v$NW_VERSION-linux-x64.tar.gz
-  rmdir nwjs-sdk-v$NW_VERSION-linux-x64
+  #NV_BASENAME=nwjs
+  NV_BASENAME=nwjs-sdk
+  wget http://dl.nwjs.io/v$NW_VERSION/${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
+  tar xvzf ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
+  mv ${NV_BASENAME}-v$NW_VERSION-linux-x64/* "$ROOT_DIR/src/nw"
+  rm ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
+  rmdir ${NV_BASENAME}-v$NW_VERSION-linux-x64
   rmdir nw
+
+  cd $ROOT_DIR/src/nw
+  yarn
+# Check NW version
+else
+  cd ${ROOT_DIR}/src/nw
+  yarn
+
+  NW_ACTUAL_VERSION=`./nw --version | grep nwjs | awk '{print $2}'`
+  echo "Using Chromium version: ${NW_ACTUAL_VERSION}"
+  CHROMIUM_ACTUAL_MAJOR_VERSION=`echo ${NW_ACTUAL_VERSION} | awk '{split($0, array, ".")} END{print array[1]}'`
+  cd ${ROOT_DIR}
+  if [[ ${CHROMIUM_ACTUAL_MAJOR_VERSION} -ne ${CHROMIUM_MAJOR_VERSION} ]]; then
+    echo "Bad Chromium major version: ${CHROMIUM_ACTUAL_MAJOR_VERSION}. Expected version ${CHROMIUM_MAJOR_VERSION}"
+    exit -1
+  fi
 fi
 
 # Remove old Cesium version
@@ -59,10 +90,17 @@ if [[ ! -f $ROOT_DIR/src/nw/cesium/index.html ]]; then
 
     mkdir gchange_unzip && cd gchange_unzip
     wget "https://github.com/duniter-gchange/gchange-client/releases/download/v${VERSION}/gchange-v${VERSION}-web.zip"
+    if [[ ! $? -eq 0 ]]; then
+        echo "Could not download Gchange web release !"
+        exit -1;
+    fi
     unzip "gchange-v${VERSION}-web.zip"
     rm "gchange-v${VERSION}-web.zip"
+
+    # Add node.js file into HTML files
     sed -i 's/<script src="config.js"><\/script>/<script src="config.js"><\/script><script src="node.js"><\/script>/' "index.html"
     sed -i 's/<script src="config.js"><\/script>/<script src="config.js"><\/script><script src="node.js"><\/script>/' "debug.html"
+
     mv * "$ROOT_DIR/src/nw/gchange/"
     cd ..
     rmdir gchange_unzip

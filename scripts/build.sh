@@ -16,7 +16,7 @@ make)
       [[ $? -eq 0 ]] && vagrant up
       [[ $? -eq 0 ]] && echo ">> VM: building Gchange..."
       [[ $? -eq 0 ]] && vagrant ssh -- 'bash -s' < ./build-deb.sh
-      if [ ! $? -eq 0 ]; then
+      if [[ ! $? -eq 0 ]]; then
         echo ">> Something went wrong. Stopping build."
       else
         echo ">> Build success. Shutting the VM down."
@@ -34,9 +34,13 @@ make)
       [[ $? -eq 0 ]] && cp ../../src/nw/package.json ./
       [[ $? -eq 0 ]] && cp ../../src/nw/LICENSE.txt ./
       [[ $? -eq 0 ]] && cp ../../src/nw/gchange/node.js ./
+      if [[ $? -eq 0 && ! -f ./duniter_trusty64.box ]]; then
+        echo ">> Downloading Windows VM..."
+        wget -kL https://s3.eu-central-1.amazonaws.com/duniter/vagrant/duniter_trusty64.box
+      fi
       [[ $? -eq 0 ]] && echo ">> Starting Vagrant Windows VM..."
       [[ $? -eq 0 ]] && vagrant up
-      if [ ! $? -eq 0 ]; then
+      if [[ ! $? -eq 0 ]]; then
         echo ">> Something went wrong. Stopping build."
       fi
       vagrant halt

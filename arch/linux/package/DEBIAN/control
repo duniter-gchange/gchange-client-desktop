@@ -1,8 +1,11 @@
 Package: gchange
-Version: 0.5.2
+Version: 0.8.3
 Section: misc
 Priority: optional
 Architecture: all
 Installed-Size: 235351
-Maintainer: Benoit Lavenier <benoit.lavenier@e-is.pro>
-Description: Gchange marketplace for Libre Currency
+Maintainer: E-IS Team <contact@e-is.pro>
+Description: Gchange marketplace in &#x011E;1
+ &#x011E;change marketplace allow exchanges in &#x011E;1, a libre currency.
+Depends: libgconf-2-4 (>= 3.2.0)
+Homepage: https://www.gchange.fr

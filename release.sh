@@ -49,6 +49,7 @@ echo "Creating the pre-release if it does not exist..."
 ASSETS=`node ./scripts/create-release.js $REMOTE_TAG create`
 
 if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
+#EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-windows-x64.exe"
     EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-linux-x64.deb
 gchange-desktop-$REMOTE_TAG-linux-x64.tar.gz
 gchange-desktop-$REMOTE_TAG-windows-x64.exe"
