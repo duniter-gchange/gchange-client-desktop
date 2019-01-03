@@ -44,7 +44,7 @@ mkdir -p $TEMP_DIR && cd $TEMP_DIR
 # Install NW.js
 if [[ ! -f $ROOT_DIR/src/nw/nw ]];
 then
-  #NV_BASENAME=nwjs
+  cd ${TEMP_DIR}
   NV_BASENAME=nwjs-sdk
   wget http://dl.nwjs.io/v$NW_VERSION/${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
   tar xvzf ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
@@ -53,13 +53,9 @@ then
   rmdir ${NV_BASENAME}-v$NW_VERSION-linux-x64
   rmdir nw
 
-  cd $ROOT_DIR/src/nw
-  yarn
 # Check NW version
 else
   cd ${ROOT_DIR}/src/nw
-  yarn
-
   NW_ACTUAL_VERSION=`./nw --version | grep nwjs | awk '{print $2}'`
   echo "Using Chromium version: ${NW_ACTUAL_VERSION}"
   CHROMIUM_ACTUAL_MAJOR_VERSION=`echo ${NW_ACTUAL_VERSION} | awk '{split($0, array, ".")} END{print array[1]}'`
@@ -70,8 +66,12 @@ else
   fi
 fi
 
+# Install deps
+cd ${ROOT_DIR}/src/nw
+yarn
+
 # Remove old Cesium version
-if [[ -f $ROOT_DIR/src/nw/cesium/index.html ]];
+if [[ -f $ROOT_DIR/src/nw/gchange/index.html ]];
 then
   OLD_VERSION=`grep -oP "version\": \"\d+.\d+.\d+((a|b)[0-9]+)?\"" $ROOT_DIR/src/nw/gchange/manifest.json | grep -oP "\d+.\d+.\d+((a|b)[0-9]+)?"`
   if [[ ! "$VERSION" = "$OLD_VERSION" ]];
@@ -80,6 +80,8 @@ then
     rm -rf $ROOT_DIR/src/nw/gchange/fonts
     rm -rf $ROOT_DIR/src/nw/gchange/img
     rm -rf $ROOT_DIR/src/nw/gchange/lib
+    rm -rf $ROOT_DIR/src/nw/gchange/locale
+    rm -rf $ROOT_DIR/src/nw/gchange/sounds
     rm -rf $ROOT_DIR/src/nw/gchange/*.html
   fi
 fi
@@ -88,7 +90,8 @@ fi
 if [[ ! -f $ROOT_DIR/src/nw/cesium/index.html ]]; then
     echo "Downloading Gchange ${VERSION}..."
 
-    mkdir gchange_unzip && cd gchange_unzip
+    cd $TEMP_DIR
+    mkdir -p ${TEMP_DIR}/gchange_unzip && cd ${TEMP_DIR}/gchange_unzip
     wget "https://github.com/duniter-gchange/gchange-client/releases/download/v${VERSION}/gchange-v${VERSION}-web.zip"
     if [[ ! $? -eq 0 ]]; then
         echo "Could not download Gchange web release !"

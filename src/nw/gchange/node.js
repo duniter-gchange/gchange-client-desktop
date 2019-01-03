@@ -117,8 +117,8 @@ const local_port = duniterConf && duniterConf.port;
 if (duniterConf &&
   duniterConf.currency === expectedCurrency
   && (!settings
-  || settings.node.host != local_host
-  || settings.node.port != local_port)) {
+    || settings.node.host != local_host
+    || settings.node.port != local_port)) {
   // Detect locale
   const locale = (settings && settings.locale && settings.locale.id).split('-')[0] || 'en';
   console.debug('[NW] Using locale: ' + locale);
