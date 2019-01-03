@@ -5,7 +5,7 @@ TAG_NAME="v$1"
 ARCH=`uname -m`
 # Check that the tag exists remotely
 
-if [[ -z $TAG ]]; then
+if [[ -z ${TAG} ]]; then
   echo "Wrong call to the command, syntax is:"
   echo ""
   echo "  release.sh <tag>"
@@ -20,16 +20,16 @@ if [[ -z $TAG ]]; then
 fi
 
 # Force nodejs version to 6
-if [ -d "$NVM_DIR" ]; then
-    . $NVM_DIR/nvm.sh
+if [[ -d "${NVM_DIR}" ]]; then
+    . ${NVM_DIR}/nvm.sh
     nvm use 6
 else
-    echo "nvm (Node version manager) not found (directory $NVM_DIR not found). Please install, and retry"
+    echo "nvm (Node version manager) not found (directory ${NVM_DIR} not found). Please install, and retry"
     exit -1
 fi
 
 # install dep if not already done
-if [ ! -d "node_modules" ]; then
+if [[ ! -d "node_modules" ]]; then
     npm install
 fi
 
@@ -38,7 +38,7 @@ echo "Checking that $TAG has been pushed to 'origin'..."
 
 REMOTE_TAG=`node scripts/exists-tag.js "$TAG_NAME" | grep -Fo "$TAG_NAME"`
 
-if [[ -z $REMOTE_TAG ]]; then
+if [[ -z ${REMOTE_TAG} ]]; then
   echo "The '$TAG' tag does not exist on 'origin' repository. Use command ./release.sh to create a new version and use 'git push origin --tags' to share the tag."
   exit 2
 fi

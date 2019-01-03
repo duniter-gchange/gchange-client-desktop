@@ -46,11 +46,12 @@ if [[ ! -f $ROOT_DIR/src/nw/nw ]];
 then
   cd ${TEMP_DIR}
   NV_BASENAME=nwjs-sdk
-  wget http://dl.nwjs.io/v$NW_VERSION/${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
-  tar xvzf ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
-  mv ${NV_BASENAME}-v$NW_VERSION-linux-x64/* "$ROOT_DIR/src/nw"
-  rm ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
-  rmdir ${NV_BASENAME}-v$NW_VERSION-linux-x64
+  wget http://dl.nwjs.io/v${NV_VERSION}/${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
+  tar xvzf ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
+  rm ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
+  mv ${NV_BASENAME}-v${NV_VERSION}-linux-x64/* "$ROOT_DIR/src/nw"
+  rm ${NV_BASENAME}-v${NV_VERSION}-linux-x64.tar.gz
+  rmdir ${NV_BASENAME}-v${NV_VERSION}-linux-x64
   rmdir nw
 
 # Check NW version
@@ -87,10 +88,10 @@ then
 fi
 
 # Install Gchange web
-if [[ ! -f $ROOT_DIR/src/nw/cesium/index.html ]]; then
+if [[ ! -f $ROOT_DIR/src/nw/gchange/index.html ]]; then
     echo "Downloading Gchange ${VERSION}..."
 
-    cd $TEMP_DIR
+    cd ${TEMP_DIR}
     mkdir -p ${TEMP_DIR}/gchange_unzip && cd ${TEMP_DIR}/gchange_unzip
     wget "https://github.com/duniter-gchange/gchange-client/releases/download/v${VERSION}/gchange-v${VERSION}-web.zip"
     if [[ ! $? -eq 0 ]]; then
@@ -99,6 +100,7 @@ if [[ ! -f $ROOT_DIR/src/nw/cesium/index.html ]]; then
     fi
     unzip "gchange-v${VERSION}-web.zip"
     rm "gchange-v${VERSION}-web.zip"
+    cd ${TEMP_DIR}/gchange_unzip
 
     # Add node.js file into HTML files
     sed -i 's/<script src="config.js"><\/script>/<script src="config.js"><\/script><script src="node.js"><\/script>/' "index.html"
