@@ -45,7 +45,6 @@ mkdir -p $TEMP_DIR && cd $TEMP_DIR
 if [[ ! -f $ROOT_DIR/src/nw/nw ]];
 then
   cd ${TEMP_DIR}
-
   NV_BASENAME=nwjs-sdk
   wget http://dl.nwjs.io/v$NW_VERSION/${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
   tar xvzf ${NV_BASENAME}-v$NW_VERSION-linux-x64.tar.gz
@@ -57,7 +56,6 @@ then
 # Check NW version
 else
   cd ${ROOT_DIR}/src/nw
-
   NW_ACTUAL_VERSION=`./nw --version | grep nwjs | awk '{print $2}'`
   echo "Using Chromium version: ${NW_ACTUAL_VERSION}"
   CHROMIUM_ACTUAL_MAJOR_VERSION=`echo ${NW_ACTUAL_VERSION} | awk '{split($0, array, ".")} END{print array[1]}'`
@@ -66,7 +64,6 @@ else
     echo "Bad Chromium major version: ${CHROMIUM_ACTUAL_MAJOR_VERSION}. Expected version ${CHROMIUM_MAJOR_VERSION}"
     exit -1
   fi
-
 fi
 
 # Install deps
