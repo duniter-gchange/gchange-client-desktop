@@ -29,7 +29,7 @@ mkdir -p "$DOWNLOADS"
 # Clean sources + releases
 # -----------
 rm -rf "$DOWNLOADS/${PROJECT_NAME}"
-#rm -rf "$DOWNLOADS/${PROJECT_NAME}_src"
+rm -rf "$DOWNLOADS/${PROJECT_NAME}_src"
 rm -rf "$RELEASES"
 rm -rf /vagrant/*.deb
 rm -rf /vagrant/*.tar.gz
@@ -44,9 +44,6 @@ cd "$DOWNLOADS"
 
 if [ ! -d "$DOWNLOADS/${PROJECT_NAME}_src" ]; then
   git clone ${REPO_PUBLIC_URL}.git ${PROJECT_NAME}_src
-else
-  cd ${PROJECT_NAME}_src
-  git
 fi
 
 cd ${PROJECT_NAME}_src
@@ -58,7 +55,7 @@ ZIP_BASENAME="${PROJECT_NAME}-v$TAG-web"
 if [ ! -e "$DOWNLOADS/${ZIP_BASENAME}.zip" ]; then
     echo "Download ${ZIP_BASENAME}.zip into ${DOWNLOADS} ..."
     cd ${PROJECT_NAME}
-    wget -kL "${REPO_PUBLIC_URL}/releases/download/v${TAG}/${ZIP_BASENAME}.zip" || exit 1
+    wget "${REPO_PUBLIC_URL}/releases/download/v${TAG}/${ZIP_BASENAME}.zip" || exit 1
     unzip ${ZIP_BASENAME}.zip || exit 1
     rm ${ZIP_BASENAME}.zip
     cd ..

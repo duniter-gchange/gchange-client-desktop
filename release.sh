@@ -69,7 +69,7 @@ ZIP_BASENAME="${PROJECT_NAME}-${REMOTE_TAG}-web"
 if [[ ! -f "${DOWNLOADS}/${ZIP_BASENAME}.zip" ]]; then
     echo "Downloading ${PROJECT_NAME} web release..."
     mkdir -p ${DOWNLOADS} && cd ${DOWNLOADS} || exit 1
-    wget "${REPO_PUBLIC_URL}/releases/download/${REMOTE_TAG}/${ZIP_BASENAME}.zip"
+    wget "${REPO_PUBLIC_URL}/releases/download/${REMOTE_TAG}/${ZIP_BASENAME}.zip" || exit 1
     if [[ $? -ne 0 ]]; then
         exit 2
     fi
@@ -77,9 +77,9 @@ if [[ ! -f "${DOWNLOADS}/${ZIP_BASENAME}.zip" ]]; then
 fi
 
 if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
-    EXPECTED_ASSETS="${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.deb"
-#${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.tar.gz
-#${PROJECT_NAME}-desktop-$REMOTE_TAG-windows-x64.exe"
+    EXPECTED_ASSETS="${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.deb
+${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.tar.gz"
+#${PROJECT_NAME}-desktop-$REMOTE_TAG-windows-x64.exe" # FIXME
 fi
 
 # Remove old vagrant virtual machines
