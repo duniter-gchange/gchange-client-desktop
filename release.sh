@@ -30,7 +30,7 @@ if [[ -z $TAG ]]; then
   exit 1
 fi
 
-# Force nodejs version to 6
+# Force nodejs version to 10
 if [[ -d "${NVM_DIR}" ]]; then
     . ${NVM_DIR}/nvm.sh
     nvm use ${NODEJS_VERSION}
@@ -156,8 +156,8 @@ if [[ $? -eq 0 ]]; then
 
   # Clean temporary files
   if [[ $? -eq 0 ]]; then
-    rm ${DOWNLOADS}/${ZIP_BASENAME}.zip
-    rmdir downloads
+    #rm ${DOWNLOADS}/${ZIP_BASENAME}.zip
+    #rmdir downloads
 
     echo "All the binaries have been uploaded."
   fi

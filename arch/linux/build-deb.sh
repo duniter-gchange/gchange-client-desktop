@@ -29,7 +29,7 @@ mkdir -p "$DOWNLOADS"
 # Clean sources + releases
 # -----------
 rm -rf "$DOWNLOADS/${PROJECT_NAME}"
-rm -rf "$DOWNLOADS/${PROJECT_NAME}_src"
+#rm -rf "$DOWNLOADS/${PROJECT_NAME}_src"
 rm -rf "$RELEASES"
 rm -rf /vagrant/*.deb
 rm -rf /vagrant/*.tar.gz
@@ -44,20 +44,22 @@ cd "$DOWNLOADS"
 
 if [ ! -d "$DOWNLOADS/${PROJECT_NAME}_src" ]; then
   git clone ${REPO_PUBLIC_URL}.git ${PROJECT_NAME}_src
+else
+  cd ${PROJECT_NAME}_src
+  git
 fi
 
 cd ${PROJECT_NAME}_src
 COMMIT=`git rev-list --tags --max-count=1`
-$TAG=`echo $(git describe --tags $COMMIT) | sed 's/^v//'`
+TAG=`echo $(git describe --tags $COMMIT) | sed 's/^v//'`
 cd ..
 
 ZIP_BASENAME="${PROJECT_NAME}-v$TAG-web"
-echo "Checking that ${PROJECT_NAME} binary has been downloaded"
 if [ ! -e "$DOWNLOADS/${ZIP_BASENAME}.zip" ]; then
-    echo "Have to download it into ${DOWNLOADS}"
+    echo "Download ${ZIP_BASENAME}.zip into ${DOWNLOADS} ..."
     cd ${PROJECT_NAME}
-    wget -kL "${REPO_PUBLIC_URL}/releases/download/v${TAG}/${ZIP_BASENAME}.zip"
-    unzip ${ZIP_BASENAME}.zip
+    wget -kL "${REPO_PUBLIC_URL}/releases/download/v${TAG}/${ZIP_BASENAME}.zip" || exit 1
+    unzip ${ZIP_BASENAME}.zip || exit 1
     rm ${ZIP_BASENAME}.zip
     cd ..
 fi
