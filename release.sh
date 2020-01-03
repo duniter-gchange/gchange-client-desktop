@@ -77,9 +77,9 @@ if [[ ! -f "${DOWNLOADS}/${ZIP_BASENAME}.zip" ]]; then
 fi
 
 if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
-    EXPECTED_ASSETS="${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.deb
-${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.tar.gz
-${PROJECT_NAME}-desktop-$REMOTE_TAG-windows-x64.exe"
+    EXPECTED_ASSETS="${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.deb"
+#${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.tar.gz
+#${PROJECT_NAME}-desktop-$REMOTE_TAG-windows-x64.exe"
 fi
 
 # Remove old vagrant virtual machines
