@@ -1,5 +1,9 @@
 #!/bin/bash
 
+PROJECT_NAME=gchange
+REPO="duniter-gchange/gchange-client"
+REPO_PUBLIC_URL="https://github.com/${REPO}"
+NODEJS_VERSION=10
 TAG="$1"
 TAG_NAME="v$1"
 ARCH=`uname -m`
@@ -8,7 +12,11 @@ ARCH=`uname -m`
 ROOT=`pwd`
 DOWNLOADS="$ROOT/downloads"
 
-if [[ -z ${TAG} ]]; then
+mkdir -p "$DOWNLOADS"
+
+# Check that the tag exists remotely
+
+if [[ -z $TAG ]]; then
   echo "Wrong call to the command, syntax is:"
   echo ""
   echo "  release.sh <tag>"
@@ -25,10 +33,17 @@ fi
 # Force nodejs version to 6
 if [[ -d "${NVM_DIR}" ]]; then
     . ${NVM_DIR}/nvm.sh
-    nvm use 6
+    nvm use ${NODEJS_VERSION}
+    if [[ $? -ne 0 ]]; then
+        nvm install ${NODEJS_VERSION}
+        if [[ $? -ne 0 ]]; then
+            exit 1;
+        fi
+    fi
+
 else
-    echo "nvm (Node version manager) not found (directory ${NVM_DIR} not found). Please install, and retry"
-    exit -1
+    echo "nvm (Node version manager) not found (directory NVM_DIR not defined). Please install nvm, and retry"
+    exit 1
 fi
 
 # install dep if not already done
@@ -46,29 +61,33 @@ if [[ -z ${REMOTE_TAG} ]]; then
 fi
 
 echo "Remote tag: $REMOTE_TAG"
-
 echo "Creating the pre-release if it does not exist..."
 ASSETS=`node ./scripts/create-release.js $REMOTE_TAG create`
 
 # Downloading web assets (once)
-GCHANGE_RELEASE="gchange-$REMOTE_TAG-web"
-if [[ ! -f "${DOWNLOADS}/${GCHANGE_RELEASE}.zip" ]]; then
-    echo "Downloading Gchange web asset..."
-    mkdir -p ${DOWNLOADS} && cd ${DOWNLOADS}
-    wget "https://github.com/duniter-gchange/gchange-client/releases/download/${REMOTE_TAG}/${GCHANGE_RELEASE}.zip"
+ZIP_BASENAME="${PROJECT_NAME}-${REMOTE_TAG}-web"
+if [[ ! -f "${DOWNLOADS}/${ZIP_BASENAME}.zip" ]]; then
+    echo "Downloading ${PROJECT_NAME} web release..."
+    mkdir -p ${DOWNLOADS} && cd ${DOWNLOADS} || exit 1
+    wget "${REPO_PUBLIC_URL}/releases/download/${REMOTE_TAG}/${ZIP_BASENAME}.zip"
     if [[ $? -ne 0 ]]; then
         exit 2
     fi
-    cd $ROOT
+    cd ${ROOT}
 fi
 
 if [[ "_$EXPECTED_ASSETS" == "_" ]]; then
-    EXPECTED_ASSETS="gchange-desktop-$REMOTE_TAG-linux-x64.deb
-gchange-desktop-$REMOTE_TAG-linux-x64.tar.gz
-gchange-desktop-$REMOTE_TAG-windows-x64.exe"
+    EXPECTED_ASSETS="${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.deb
+${PROJECT_NAME}-desktop-$REMOTE_TAG-linux-x64.tar.gz
+${PROJECT_NAME}-desktop-$REMOTE_TAG-windows-x64.exe"
 fi
 
+# Remove old vagrant virtual machines
+echo "Removing old Vagrant VM... TODO: optimize this !"
+rm -rf ~/.vagrant.d/*
+
 echo "Assets: $EXPECTED_ASSETS"
+
 for asset in $EXPECTED_ASSETS; do
   if [[ -z `echo $ASSETS | grep -F "$asset"` ]]; then
 
@@ -80,7 +99,9 @@ for asset in $EXPECTED_ASSETS; do
         echo "Starting Debian build..."
         ./scripts/build.sh make linux $TAG
         DEB_PATH="$PWD/arch/linux/$asset"
-        node ./scripts/upload-release.js $REMOTE_TAG $DEB_PATH
+        if [[ $? -eq 0 ]] && [[ -f "${DEB_PATH}" ]]; then
+          node ./scripts/upload-release.js ${REMOTE_TAG} ${DEB_PATH}
+        fi
       else
         echo "This computer cannot build this asset, required architecture is 'x86_64'. Skipping."
       fi
@@ -92,7 +113,37 @@ for asset in $EXPECTED_ASSETS; do
         echo "Starting Windows build..."
         ./scripts/build.sh make win $TAG
         WIN_PATH="$PWD/arch/windows/$asset"
-        node ./scripts/upload-release.js $REMOTE_TAG $WIN_PATH
+        if [[ -f "${WIN_PATH}" ]]; then
+          node ./scripts/upload-release.js ${REMOTE_TAG} ${WIN_PATH}
+        fi
+      else
+        echo "This computer cannot build this asset, required architecture is 'x86_64'. Skipping."
+      fi
+    fi
+
+    # OSX
+    if [[ $asset == *"osx-x64.zip" ]]; then
+      if [[ $ARCH == "x86_64" ]]; then
+        echo "Starting OSX build..."
+        ./scripts/build.sh make osx $TAG
+        OSX_PATH="$PWD/arch/osx/$asset"
+        if [[ -f "${OSX_PATH}" ]]; then
+          node ./scripts/upload-release.js ${REMOTE_TAG} ${OSX_PATH}
+        fi
+      else
+        echo "This computer cannot build this asset, required architecture is 'x86_64'. Skipping."
+      fi
+    fi
+
+    # iOS
+    if [[ $asset == *"ios.zip" ]]; then
+      if [[ $ARCH == "x86_64" ]]; then
+        echo "Starting iOS build..."
+        ./scripts/build.sh make ios $TAG
+        IOS_PATH="$PWD/arch/osx/$asset"
+        if [[ -f "${IOS_PATH}" ]]; then
+          node ./scripts/upload-release.js ${REMOTE_TAG} ${IOS_PATH}
+        fi
       else
         echo "This computer cannot build this asset, required architecture is 'x86_64'. Skipping."
       fi
@@ -100,4 +151,15 @@ for asset in $EXPECTED_ASSETS; do
   fi
 done
 
-echo "All the binaries have been uploaded."
+if [[ $? -eq 0 ]]; then
+  cd ${ROOT}
+
+  # Clean temporary files
+  if [[ $? -eq 0 ]]; then
+    rm ${DOWNLOADS}/${ZIP_BASENAME}.zip
+    rmdir downloads
+
+    echo "All the binaries have been uploaded."
+  fi
+
+fi
