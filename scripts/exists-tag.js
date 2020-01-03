@@ -6,10 +6,10 @@ const os = require('os');
 const path = require('path');
 const rp = require('request-promise');
 
-const REPO         = 'duniter-gchange/gchange-client'
+const REPO         = 'duniter-gchange/gchange-client';
 const tagName      = process.argv[2]
 
-const GITHUB_TOKEN = fs.readFileSync(path.resolve(os.homedir(), '.config/duniter-gchange/.github'), 'utf8').replace(/\n/g, '')
+const GITHUB_TOKEN = fs.readFileSync(path.resolve(os.homedir(), '.config/gchange/.github'), 'utf8').replace(/\n/g, '')
 
 co(function*() {
   try {
